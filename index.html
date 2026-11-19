@@ -1,1 +1,312 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CREWUP — Phase 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== DESIGN SYSTEM : jetons, base, composants ===== */
+*{box-sizing:border-box}
+:root{--bg:#07080f;--s1:#0f1120;--b:rgba(255,255,255,.08);--t:#eef0ff;--m:#8d93b3;--a:#8a6bff;--r:#ff5c8a;--g:#35e0c2;--o:#ffb347;--grad:linear-gradient(120deg,#8a6bff,#ff5c8a);--sw:248px;--hd:"Chakra Petch",system-ui,sans-serif;color-scheme:dark;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--t);font:15px/1.5 Outfit,system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:hidden}
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(600px 420px at 90% -5%,rgba(138,107,255,.2),transparent),radial-gradient(500px 380px at 0 100%,rgba(255,92,138,.12),transparent)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:rgba(7,8,15,.9);backdrop-filter:blur(16px)}
+a{color:inherit}h1,h2,h3,p{margin:0}h1,h2,h3,.lg b{font-family:var(--hd)}h1{font-size:clamp(26px,4.5vw,38px);letter-spacing:-.01em;line-height:1.15}
+small{display:block;color:var(--m);font-size:12.5px}.mu{color:var(--m)}
+button,input{font:inherit;color:inherit}:focus-visible{outline:2px solid var(--a);outline-offset:2px}
+/* navigation */
+#side{position:fixed;top:0;bottom:0;left:0;width:var(--sw);z-index:20;display:flex;flex-direction:column;gap:4px;padding:calc(18px + env(safe-area-inset-top,0px)) 12px calc(18px + env(safe-area-inset-bottom,0px));background:rgba(15,17,32,.72);backdrop-filter:blur(18px);border-right:1px solid var(--b);overflow-y:auto}
+.lg{display:flex;align-items:center;gap:10px;text-decoration:none;font-size:21px;padding:4px 8px 16px}
+.lm{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;flex:none;background:var(--grad);color:#fff;box-shadow:0 6px 20px -4px rgba(255,92,138,.6)}.mo{display:none}
+.ni{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;text-decoration:none;color:var(--m);transition:.2s}
+.ni:hover{background:rgba(255,255,255,.05);color:var(--t);transform:translateX(3px)}
+.ni.on{color:#fff;background:linear-gradient(90deg,rgba(138,107,255,.3),rgba(138,107,255,.05));box-shadow:inset 2px 0 var(--a)}
+#main{margin-left:var(--sw)}
+#top{position:sticky;top:env(safe-area-inset-top,0px);z-index:15;display:flex;align-items:center;gap:12px;padding:12px 24px;background:rgba(7,8,15,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--b)}
+#top h2{flex:1;min-width:0;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ib{position:relative;width:42px;height:42px;padding:0;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.06);border:1px solid var(--b);cursor:pointer}.mb{display:none}
+.dot{position:absolute;top:9px;right:10px;width:8px;height:8px;border-radius:50%;background:var(--r)}
+#view{max-width:1180px;margin:auto;padding:24px}
+#bar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:30;justify-content:space-around;align-items:flex-end;padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px));background:rgba(15,17,32,.92);backdrop-filter:blur(18px);border-top:1px solid var(--b)}
+.bi{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:58px;padding:4px;border:0;background:none;color:var(--m);font-size:11px;text-decoration:none;cursor:pointer}.bi span{display:grid}.bi.on{color:#fff}.bi.on span{color:var(--a)}
+.bi.sos span{place-items:center;width:54px;height:54px;margin-top:-28px;border-radius:50%;background:var(--grad);color:#fff;box-shadow:0 8px 24px rgba(255,92,138,.55)}
+/* composants */
+.c{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.012)),var(--s1);border:1px solid var(--b);border-radius:20px;padding:18px;box-shadow:0 14px 34px -16px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.06);transition:transform .25s,border-color .25s,box-shadow .25s}
+.hv:hover{transform:translateY(-2px);border-color:rgba(138,107,255,.5);box-shadow:0 18px 40px -14px rgba(138,107,255,.35)}
+.c h3{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px;font-size:16px}.c h3 a{font-size:12.5px;color:var(--a);text-decoration:none;font-family:Outfit,sans-serif}
+.g{display:grid;gap:16px}.g>*{min-width:0}.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))}.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
+.dash{grid-template-columns:minmax(0,1fr)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.fx{flex:1;min-width:0}
+.ph{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:18px}
+.rib{font-size:12.5px;color:var(--o);background:rgba(255,179,71,.07);border:1px solid rgba(255,179,71,.25);border-radius:12px;padding:8px 12px;margin-bottom:16px}
+.dm{display:inline-block;font-size:11px;padding:2px 8px;border-radius:99px;background:rgba(255,179,71,.14);color:var(--o);border:1px solid rgba(255,179,71,.35);white-space:nowrap;font-family:Outfit,sans-serif;font-weight:500}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;border:0;border-radius:12px;padding:10px 18px;font-weight:600;color:#fff;background:var(--grad);text-decoration:none;cursor:pointer;box-shadow:0 8px 24px -8px rgba(138,107,255,.7);transition:transform .15s,filter .2s}
+.btn:hover{filter:brightness(1.12)}.btn:active{transform:scale(.95)}.btn.gh{background:rgba(255,255,255,.08);box-shadow:none}.btn.sm{min-height:38px;padding:7px 14px;font-size:13.5px}
+.chs{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 14px}
+.ch{display:inline-flex;align-items:center;padding:6px 12px;border-radius:99px;background:rgba(255,255,255,.06);border:1px solid var(--b);font-size:13px;color:var(--m);cursor:pointer;transition:.2s}.ch.on{color:#fff;background:rgba(138,107,255,.3);border-color:var(--a)}
+.av{position:relative;flex:none;width:var(--z,44px);height:var(--z,44px);border-radius:14px;display:grid;place-items:center;font:700 calc(var(--z,44px)/2.4) var(--hd);color:#fff;background:linear-gradient(135deg,var(--c),#0f1120 170%);border:1px solid rgba(255,255,255,.14)}
+.av.on::after{content:"";position:absolute;right:-3px;bottom:-3px;width:12px;height:12px;border-radius:50%;background:var(--g);border:2px solid var(--s1)}
+.rw{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--b)}.rw:first-of-type{border-top:0}
+.ib2{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;flex:none;background:rgba(138,107,255,.18);color:var(--a)}
+.pc,.sr{display:flex;align-items:center;gap:12px}
+.dots{display:flex;gap:4px;align-items:center;margin-top:6px}.dots i{width:18px;height:6px;border-radius:4px;background:rgba(255,255,255,.12)}.dots i.f{background:var(--g)}.dots small{margin-left:6px}
+.dt{width:48px;flex:none;text-align:center;border-radius:12px;background:rgba(138,107,255,.16);padding:6px 0;line-height:1.15}.dt b{display:block;font:700 18px var(--hd)}.dt small{font-size:11px}
+.dtd{width:8px;height:8px;border-radius:50%;background:var(--r);flex:none}
+.pb{height:8px;border-radius:9px;background:rgba(255,255,255,.09);overflow:hidden}.pb i{display:block;height:100%;width:var(--w);border-radius:9px;background:var(--grad);animation:fill 1s cubic-bezier(.2,.8,.2,1)}@keyframes fill{from{width:0}}
+.br{display:grid;grid-template-columns:96px 1fr 26px;gap:10px;align-items:center;margin:9px 0}.br b{font-size:13px;text-align:right}
+.rg{--p:80;position:relative;flex:none;width:var(--z,64px);height:var(--z,64px);border-radius:50%;display:grid;place-items:center;margin:auto;background:conic-gradient(var(--g) calc(var(--p)*1%),rgba(255,255,255,.09) 0)}.rg::before{content:"";position:absolute;inset:12%;border-radius:50%;background:var(--s1)}.rg b{position:relative;font:700 calc(var(--z)/3.6) var(--hd)}
+.hero{display:grid;grid-template-columns:1.3fr 1fr;gap:24px;margin-bottom:16px;padding:26px;background:radial-gradient(520px 240px at 0 0,rgba(138,107,255,.28),transparent),var(--s1)}
+.hs{display:flex;gap:14px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}.pp{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:84px;text-decoration:none;font-size:13.5px}
+.sosq{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:12px;background:linear-gradient(135deg,rgba(255,92,138,.38),rgba(138,107,255,.3)),var(--s1)}.sosq h3{font-size:20px}
+.rad{position:relative;width:150px;height:150px;border-radius:50%;border:0;display:grid;place-items:center;margin:8px auto;color:#fff;cursor:pointer;background:var(--grad);box-shadow:0 0 50px rgba(255,92,138,.5)}
+.rad::before,.rad::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--r);opacity:0}.rad.go::before,.rad.go::after{animation:ping 1.6s infinite}.rad.go::after{animation-delay:.8s}@keyframes ping{from{opacity:.8}to{transform:scale(2.2);opacity:0}}
+.sl{width:48px;height:48px;border-radius:14px;border:2px dashed rgba(255,255,255,.2);background:none;color:var(--m);display:grid;place-items:center;cursor:pointer}.sl.f{border:2px solid var(--g);background:rgba(53,224,194,.12);color:var(--g)}.sl.w{border:2px solid var(--o);color:var(--o);animation:pulse 1s infinite alternate}@keyframes pulse{to{box-shadow:0 0 18px rgba(255,179,71,.5)}}
+input:not([type=checkbox]){width:100%;max-width:100%;min-width:0;margin:4px 0 12px;padding:11px 13px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid var(--b)}
+.cbn{height:64px;border-radius:12px;background:linear-gradient(135deg,var(--c),transparent 130%)}.city{width:100%;height:90px;margin:8px 0}.city rect{fill:url(#gg)}
+.tl{position:relative;padding-left:26px}.tl::before{content:"";position:absolute;left:8px;top:8px;bottom:8px;width:2px;background:linear-gradient(var(--a),var(--r),transparent)}
+.it{position:relative;margin-bottom:14px}.it::before{content:"";position:absolute;left:-24px;top:22px;width:12px;height:12px;border-radius:50%;background:var(--r);box-shadow:0 0 0 4px rgba(255,92,138,.2)}.it b{font-family:var(--hd)}
+.pf{padding:0;overflow:hidden}.bn{height:100px;background:linear-gradient(120deg,#8a6bff,#ff5c8a 70%,#ffb347)}.bd{padding:0 20px 20px;margin-top:-34px}.bd .av{border:3px solid var(--s1)}
+.rk{width:28px;font:700 16px var(--hd);color:var(--m)}.r1 .rk{color:#ffd166}.r2 .rk{color:#c9d1e8}.r3 .rk{color:#e09a6b}
+.sw{position:relative;width:46px;height:26px;flex:none}.sw input{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;opacity:0;cursor:pointer;z-index:1}.sw i{position:absolute;inset:0;border-radius:99px;background:rgba(255,255,255,.14);transition:.2s}.sw i::after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}.sw input:checked+i{background:var(--a)}.sw input:checked+i::after{transform:translateX(20px)}
+.em{display:grid;justify-items:center;gap:6px;text-align:center;padding:34px 16px;color:var(--m)}.em b{color:var(--t);font-family:var(--hd)}.g+.em{margin-top:16px}
+.msg{display:grid;grid-template-columns:290px minmax(0,1fr);padding:0;overflow:hidden;min-height:420px}.ls{border-right:1px solid var(--b)}
+.cr{display:flex;width:100%;gap:12px;align-items:center;text-align:left;padding:14px;background:none;border:0;border-bottom:1px solid var(--b);cursor:pointer}.cr.on,.cr:hover{background:rgba(138,107,255,.12)}
+.ct{display:flex;flex-direction:column;min-width:0}.cth{display:flex;gap:10px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--b)}
+.ms{flex:1;display:flex;flex-direction:column;gap:10px;padding:14px;overflow:auto}.mg{max-width:80%;padding:9px 13px;border-radius:14px 14px 14px 4px;background:rgba(255,255,255,.07)}.mg.me{align-self:flex-end;border-radius:14px 14px 4px 14px;background:linear-gradient(120deg,rgba(138,107,255,.5),rgba(255,92,138,.4))}
+.cin{display:flex;gap:8px;align-items:center;padding:12px;border-top:1px solid var(--b)}.cin input{margin:0}
+.mg2{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px}.mi{display:grid;justify-items:center;gap:6px;padding:12px 6px;border-radius:14px;background:rgba(255,255,255,.05);text-decoration:none;text-align:center}.mi small{color:var(--t);font-size:12px}
+#modal{position:fixed;inset:0;z-index:50;display:none;align-items:flex-end;justify-content:center;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);background:rgba(3,4,10,.72);backdrop-filter:blur(6px)}#modal.on{display:flex}
+.sheet{width:min(560px,100%);max-height:88%;overflow:auto;padding:22px;background:var(--s1);border:1px solid var(--b);border-radius:24px 24px 0 0;animation:up .3s cubic-bezier(.2,.8,.2,1)}@keyframes up{from{transform:translateY(40px);opacity:0}}
+#toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:60;max-width:90%;padding:11px 18px;border-radius:14px;background:#1b1f38;border:1px solid var(--a);box-shadow:0 10px 30px rgba(0,0,0,.5);opacity:0;transform:translate(-50%,16px);pointer-events:none;transition:.3s}#toast.on{opacity:1;transform:translate(-50%,0)}
+.ani{animation:in .4s cubic-bezier(.2,.8,.2,1)}@keyframes in{from{opacity:0;transform:translateY(14px)}}
+/* responsive */
+@media(min-width:700px){.dash{grid-template-columns:repeat(2,minmax(0,1fr))}.sp2,.sp3{grid-column:1/-1}#modal{align-items:center}.sheet{border-radius:24px}}
+@media(min-width:1200px){.dash{grid-template-columns:repeat(3,minmax(0,1fr))}.sp2{grid-column:span 2}}
+@media(max-width:899px){#side,.dsk{display:none}#main{margin:0}#bar{display:flex}.mo{display:grid}#top{padding:10px 14px}#view{padding:16px 14px 120px}.hero{grid-template-columns:1fr}.msg{grid-template-columns:1fr}.msg.open .ls,.msg:not(.open) .ct{display:none}.mb{display:grid}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ===== finition phase 1 : micro-interactions (sobres) ===== */
+html{-webkit-tap-highlight-color:transparent}button,a,.ch,.sl{touch-action:manipulation}
+.ani .c{animation:in .45s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(var(--i,0)*45ms)}
+.btn:hover{transform:translateY(-1px)}.btn:active{transform:scale(.96)}
+.ch:hover{border-color:rgba(138,107,255,.5);color:var(--t)}.ch:active,.sl:active,.cr:active,.ib:active{transform:scale(.95)}
+.ch.on{animation:pop .25s ease}@keyframes pop{50%{transform:scale(1.1)}}
+#modal.on{animation:fade .2s ease}@keyframes fade{from{opacity:0}}
+.dot{animation:halo 2.4s ease-in-out infinite}@keyframes halo{50%{box-shadow:0 0 0 5px rgba(255,92,138,.18)}}
+.bi span{transition:transform .15s}.bi:active span{transform:scale(.9)}
+@media(hover:none){.hv:hover,.ni:hover,.btn:hover{transform:none;filter:none}}
+
+/* ===== finition v2 : profondeur, identité, tactile ===== */
+::selection{background:rgba(138,107,255,.45)}html{scrollbar-width:thin;scrollbar-color:#2a2e4d transparent}
+h1{background:linear-gradient(180deg,#fff,#bfc4ee);-webkit-background-clip:text;background-clip:text;color:transparent}
+.c{position:relative}.c::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:linear-gradient(160deg,rgba(255,255,255,.2),transparent 38%,rgba(138,107,255,.2));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.c h3{position:relative;padding-left:11px;font-weight:700;letter-spacing:.01em}.c h3::before{content:"";position:absolute;left:0;top:50%;width:3px;height:14px;transform:translateY(-50%);border-radius:2px;background:var(--grad)}
+.hero{background:radial-gradient(520px 240px at 0 0,rgba(138,107,255,.3),transparent),radial-gradient(380px 220px at 100% 100%,rgba(255,92,138,.16),transparent),var(--s1)}
+.btn{position:relative;overflow:hidden}.btn:not(.gh)::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.3) 50%,transparent 70%);transform:translateX(-120%);transition:transform .6s}.btn:not(.gh):hover::after{transform:translateX(120%)}
+.btn.gh:hover{background:rgba(255,255,255,.13)}.ch.on{box-shadow:0 0 0 3px rgba(138,107,255,.16)}
+.ni.on{box-shadow:inset 3px 0 var(--a),0 0 26px -12px var(--a)}.ni.on svg{color:var(--a)}
+.bi{position:relative}.bi.on:not(.sos)::after{content:"";position:absolute;top:-8px;width:22px;height:3px;border-radius:0 0 3px 3px;background:var(--a)}
+.dt b,.rg b,.br b,.rk,.pb+small{font-variant-numeric:tabular-nums}
+.pb i{position:relative;overflow:hidden}.pb i::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transform:translateX(-100%);animation:sh 1.6s 1.2s 1}@keyframes sh{to{transform:translateX(100%)}}
+.rad:not(.go){animation:breathe 3.2s ease-in-out infinite}@keyframes breathe{50%{box-shadow:0 0 70px rgba(255,92,138,.6)}}
+.av{box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 6px 14px -6px rgba(0,0,0,.6)}.hs{scroll-snap-type:x proximity}.pp{scroll-snap-align:start}
+.sheet::before{content:"";display:block;width:40px;height:4px;margin:-8px auto 14px;border-radius:4px;background:rgba(255,255,255,.18)}
+.sk{border-radius:12px;background:linear-gradient(90deg,rgba(255,255,255,.05),rgba(255,255,255,.12),rgba(255,255,255,.05)) 0 0/200% 100%;animation:skel 1.4s linear infinite}@keyframes skel{to{background-position:-200% 0}}
+@media(min-width:700px){.sheet::before{display:none}}
+@media(pointer:coarse){.ch{min-height:40px;padding:8px 14px}.ib{width:44px;height:44px}.cr{min-height:64px}}
+@media(hover:none){.btn::after{display:none}}
+
+/* ===== v3 : identité gaming (HUD) : angles coupés, hexagones, corner brackets, barres segmentées ===== */
+:root{--bg:#05060d;--s1:#0b0d1a;--hex:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);--cut:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px)}
+body{background:var(--bg)}
+body::after{background:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px) 0 0/44px 44px,linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px) 0 0/44px 44px,radial-gradient(600px 420px at 90% -5%,rgba(138,107,255,.28),transparent),radial-gradient(520px 380px at 0 100%,rgba(255,92,138,.17),transparent)}
+.ph h1,#top h2,.c h3,.ni,.bi,.btn,.ch,.dm,.lg b,#toast{font-family:var(--hd);text-transform:uppercase;letter-spacing:.06em}
+.ph h1{font-size:clamp(24px,5vw,34px);letter-spacing:.03em}.c h3{font-size:13.5px}.c h3 a{text-transform:none;letter-spacing:0}#top h2{font-size:15px;letter-spacing:.1em}
+.ph{position:relative;padding-bottom:14px;border-bottom:1px solid var(--b)}.ph::after{content:"";position:absolute;left:0;bottom:-1px;width:96px;height:2px;background:var(--grad)}
+.c{border-radius:10px;background:radial-gradient(260px 130px at 100% 0,rgba(138,107,255,.13),transparent),linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.01)),var(--s1)}
+.c:not(.it)::before{content:"";position:absolute;inset:7px;pointer-events:none;opacity:.65;transition:opacity .25s;background:linear-gradient(var(--a),var(--a)) 0 0/14px 1px,linear-gradient(var(--a),var(--a)) 0 0/1px 14px,linear-gradient(var(--a),var(--a)) 100% 0/14px 1px,linear-gradient(var(--a),var(--a)) 100% 0/1px 14px,linear-gradient(var(--a),var(--a)) 0 100%/14px 1px,linear-gradient(var(--a),var(--a)) 0 100%/1px 14px,linear-gradient(var(--a),var(--a)) 100% 100%/14px 1px,linear-gradient(var(--a),var(--a)) 100% 100%/1px 14px;background-repeat:no-repeat}
+.c.hv:hover::before{opacity:1}
+.btn{border-radius:0;clip-path:var(--cut);box-shadow:none;font-size:13px;border-bottom:2px solid rgba(255,255,255,.3)}.btn.sm{font-size:12px}.btn.gh{border-bottom-color:rgba(255,255,255,.12)}
+.ch{border-radius:4px;font-size:11.5px;font-weight:500}.ch.on{box-shadow:none;border-color:var(--a);background:linear-gradient(90deg,rgba(138,107,255,.5),rgba(138,107,255,.14))}
+.av{border-radius:0;clip-path:var(--hex);border:0}.av.on::after{right:3%;bottom:16%}
+.lv{position:relative;display:inline-flex;flex:none}.lv em{position:absolute;left:-8px;bottom:-4px;width:26px;height:28px;display:grid;place-items:center;font:700 12px var(--hd);font-style:normal;color:#07080f;background:var(--o);clip-path:var(--hex)}
+.ib2{border-radius:0;clip-path:var(--hex);background:linear-gradient(135deg,rgba(138,107,255,.38),rgba(255,92,138,.26))}
+.pb{height:10px;border-radius:0;transform:skewX(-20deg);-webkit-mask:repeating-linear-gradient(90deg,#000 0 8px,transparent 8px 11px);mask:repeating-linear-gradient(90deg,#000 0 8px,transparent 8px 11px)}.pb i{border-radius:0}
+.dots i{width:16px;height:9px;border-radius:0;transform:skewX(-20deg)}
+.sl{border:0;border-radius:0;clip-path:var(--hex);background:rgba(255,255,255,.07)}.sl.f{background:rgba(53,224,194,.28)}.sl.w{background:rgba(255,179,71,.3);animation:none}
+.dt{border-radius:4px;border:1px solid rgba(138,107,255,.45)}.dm{border-radius:4px;font-size:10px;letter-spacing:.08em}
+.lm{border-radius:0;clip-path:var(--hex);box-shadow:none}.lg b{font-size:22px;letter-spacing:.12em}
+.ni{border-radius:0;font-size:12.5px}.ni.on{clip-path:polygon(0 0,calc(100% - 12px) 0,100% 50%,calc(100% - 12px) 100%,0 100%)}
+.ib{border-radius:8px}.bi{font-size:10px;font-family:var(--hd);text-transform:uppercase;letter-spacing:.08em}
+.bi.sos{filter:drop-shadow(0 6px 12px rgba(255,92,138,.55))}.bi.sos span{border-radius:0;clip-path:var(--hex);box-shadow:none;width:60px;height:64px;margin-top:-34px}
+.hero{background:repeating-linear-gradient(135deg,rgba(255,255,255,.035) 0 2px,transparent 2px 16px) 100% 0/55% 100% no-repeat,radial-gradient(520px 240px at 0 0,rgba(138,107,255,.34),transparent),radial-gradient(380px 220px at 100% 100%,rgba(255,92,138,.2),transparent),var(--s1)}.hero h1{font-size:clamp(28px,6vw,44px)}
+.cbn{border-radius:6px;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 2px,transparent 2px 12px),linear-gradient(135deg,var(--c),transparent 130%)}
+.bn{background:repeating-linear-gradient(135deg,rgba(255,255,255,.1) 0 2px,transparent 2px 12px),linear-gradient(120deg,#8a6bff,#ff5c8a 70%,#ffb347)}
+.sheet{border-radius:10px 10px 0 0;border-top:2px solid var(--a);background:radial-gradient(300px 140px at 100% 0,rgba(138,107,255,.16),transparent),var(--s1)}
+#toast{border-radius:0;clip-path:var(--cut);border:0;border-left:3px solid var(--g);background:#141830;font-size:12.5px}
+.mg{border-radius:6px 6px 6px 0}.mg.me{border-radius:6px 6px 0 6px}input:not([type=checkbox]){border-radius:6px;border-bottom:2px solid rgba(138,107,255,.5)}
+.sw i{border-radius:4px}.sw i::after{border-radius:2px}.rw.r1{background:linear-gradient(90deg,rgba(255,209,102,.12),transparent)}.rw.r2{background:linear-gradient(90deg,rgba(201,209,232,.08),transparent)}.rw.r3{background:linear-gradient(90deg,rgba(224,154,107,.1),transparent)}
+@media(min-width:700px){.sheet{border-radius:10px}}
+
+/* ===== CREWUP+ (offre payante, démo) ===== */
+.pls{display:inline-flex;align-items:center;gap:3px;font:700 10.5px var(--hd);letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:6px;color:#1a1200;background:linear-gradient(120deg,#ffd36b,var(--o));vertical-align:middle}
+.upg{display:grid;gap:8px;justify-items:start;border-color:rgba(255,179,71,.4);background:linear-gradient(180deg,rgba(255,179,71,.1),rgba(255,92,138,.04)),var(--s1)}.upg>svg{color:var(--o)}.upg.on{border-color:rgba(53,224,194,.45)}
+.prc{font:700 15px var(--hd);color:var(--o);margin-left:8px}
+
+</style>
+</head>
+<body>
+<aside id="side"></aside>
+<div id="main"><header id="top"></header><main id="view"></main></div>
+<nav id="bar"></nav><div id="modal"></div><div id="toast" role="status"></div>
+<script>
+/* ===== ICONES (tracés SVG) ===== */
+const I={home:"M3 10l9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z",search:"M11 3a8 8 0 1 0 0 16 8 8 0 1 0 0-16zM21 21l-4.3-4.3",life:"M12 2a10 10 0 1 0 0 20 10 10 0 1 0 0-20zM12 8a4 4 0 1 0 0 8 4 4 0 1 0 0-8zM5 5l4 4M15 15l4 4M15 9l4-4M5 19l4-4",heart:"M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21.2l7.8-7.7 1-1.1a5.5 5.5 0 0 0 0-7.8z",pad:"M7 7h10a5 5 0 0 1 0 10H7A5 5 0 0 1 7 7zM7 10v4M5 12h4M16 11.5h.01M18.5 13h.01",plus:"M12 5v14M5 12h14",users:"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 3a4 4 0 1 0 0 8 4 4 0 1 0 0-8zM23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8",cal:"M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zM16 2v4M8 2v4M3 10h18",msg:"M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z",bell:"M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0",news:"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h8",user:"M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 3a4 4 0 1 0 0 8 4 4 0 1 0 0-8z",compass:"M12 2a10 10 0 1 0 0 20 10 10 0 1 0 0-20zM16 8l-2 6-6 2 2-6z",award:"M12 1a7 7 0 1 0 0 14 7 7 0 1 0 0-14zM8.2 13.9L7 23l5-3 5 3-1.2-9.1",sliders:"M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6",shield:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",zap:"M13 2L3 14h9l-1 8 10-12h-9z",x:"M18 6L6 18M6 6l12 12",grid:"M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z",check:"M20 6L9 17l-5-5",star:"M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z",lock:"M5 11h14v10H5zM8 11V7a4 4 0 0 1 8 0v4"};
+
+/* ===== DONNEES DE DEMO (fictives, a remplacer par Supabase plus tard) ===== */
+const D={
+players:[
+{n:"NovaFox",g:"Valorant",m:"Compétitif",f:96,o:1,c:"#8a6bff",k:94},
+{n:"KiraByte",g:"Rocket League",m:"Chill",f:92,o:1,c:"#ff5c8a",k:88},
+{n:"Zeph",g:"GTA Online",m:"Fun",f:88,o:1,c:"#35e0c2",k:83},
+{n:"LunaRift",g:"Apex Legends",m:"Compétitif",f:94,o:0,c:"#ffb347",k:79},
+{n:"Bram",g:"Minecraft",m:"Créatif",f:90,o:1,c:"#4da3ff",k:75},
+{n:"Tsuki",g:"Fortnite",m:"Coop",f:85,o:0,c:"#c77dff",k:71}],
+moods:["Chill","Compétitif","Fun","Coop","Créatif","Nocturne"],
+sessions:[
+{t:"Braquage nocturne",g:"GTA Online",h:"ce soir, 21 h",s:[3,4]},
+{t:"Ranked soirée",g:"Valorant",h:"demain, 20 h 30",s:[4,5]},
+{t:"Tournoi 2v2 amical",g:"Rocket League",h:"samedi, 18 h",s:[2,4]},
+{t:"Build collectif",g:"Minecraft",h:"dimanche, 15 h",s:[5,8]}],
+events:[{t:"CREWUP Cup (exemple)",d:"28",mo:"nov.",k:"Tournoi"},{t:"Soirée découverte",d:"02",mo:"déc.",k:"Soirée"},{t:"Marathon coop",d:"06",mo:"déc.",k:"Défi"}],
+crews:[{n:"Night Raiders",g:"GTA Online",u:128,c:"#ff5c8a"},{n:"Ascend FR",g:"Valorant",u:342,c:"#8a6bff"},{n:"Chill Squad",g:"Multi-jeux",u:215,c:"#35e0c2"},{n:"Blocks United",g:"Minecraft",u:87,c:"#ffb347"}],
+news:[{t:"Les modes coop séduisent de plus en plus de joueurs",k:"Tendances",c:"#8a6bff"},{t:"Bien préparer sa première session ranked",k:"Guide",c:"#ff5c8a"},{t:"Sorties de la semaine : ce qu’il ne faut pas rater",k:"Sorties",c:"#35e0c2"}],
+notifs:[["NovaFox t’invite à rejoindre «&nbsp;Ranked soirée&nbsp;»","il y a 5 min"],["Il reste 1 place dans «&nbsp;Braquage nocturne&nbsp;»","il y a 20 min"],["Ton FairPlay Score progresse : +2 cette semaine","il y a 1 h"]],
+act:["Tu as rejoint le crew Night Raiders","Session «&nbsp;Ranked soirée&nbsp;» créée","FairPlay Score +2 après ta dernière session","Un souvenir ajouté à ton Player Journey"],
+chal:[{t:"1 million de parties coop",p:62,r:"badge Coop"},{t:"Semaine du FairPlay",p:41,r:"cadre doré"},{t:"Marathon des crews",p:78,r:"titre Marathonien"}],
+jr:[{d:"novembre 2026",t:"Première victoire en équipe",g:"Valorant"},{d:"octobre 2026",t:"Un crew rejoint : Night Raiders",g:"GTA Online"},{d:"septembre 2026",t:"Tournoi entre amis terminé 2e",g:"Rocket League"},{d:"août 2026",t:"Premier souvenir ajouté",g:"Minecraft"}],
+convos:[{n:"Night Raiders",c:"#ff5c8a",l:"On se retrouve à 21 h ?",m:[["NovaFox","On se retrouve à 21 h ?"],["Toi","Parfait, j’arrive."]]},{n:"KiraByte",c:"#35e0c2",l:"GG pour hier !",m:[["KiraByte","GG pour hier !"]]},{n:"Ascend FR",c:"#8a6bff",l:"Nouveau salon vocal ouvert",m:[["Ascend FR","Nouveau salon vocal ouvert"]]}]
+};
+/* pages : clé de route => [libellé, icône] */
+const P={accueil:["Accueil","home"],joueurs:["Découvrir","search"],sos:["SOS Joueur","life"],match:["Match Perfect","heart"],sessions:["Sessions","pad"],creer:["Créer une session","plus"],crews:["Communautés","users"],evenements:["Événements","cal"],messages:["Messagerie","msg"],notifications:["Notifications","bell"],actus:["Actus gaming","news"],profil:["Profil joueur","user"],journey:["Player Journey","compass"],classements:["Classements","award"],plus:["CREWUP+","star"],parametres:["Paramètres","sliders"],admin:["Administration","shield"]};
+const S={k:"accueil",mood:"",sos:0,slots:[1,1,0,0,0],convo:null,notif:1,chat:{},plus:0,yr:1,af:0,fp:0};
+
+/* ===== COMPOSANTS D AFFICHAGE ===== */
+const $=s=>document.querySelector(s);
+const ic=(n,z=20)=>`<svg width="${z}" height="${z}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${I[n]}"/></svg>`;
+const esc=s=>s.replace(/[&<>"]/g,c=>"&#"+c.charCodeAt(0)+";");
+const av=(p,z=44)=>`<span class="av${p.o?" on":""}" style="--c:${p.c};--z:${z}px">${p.n[0]}</span>`;
+const dm='<span class="dm">Démo</span>';
+const card=(t,b,l,k="")=>`<section class="c ${k}"><h3><span>${t} ${dm}</span>${l?`<a href="#${l}">Voir tout</a>`:""}</h3>${b}</section>`;
+const ph=(t,s)=>`<div class="ph"><div><h1>${t}</h1><p class="mu">${s}</p></div>${dm}</div>`;
+const pbar=v=>`<div class="pb"><i style="--w:${v}%"></i></div>`;
+const bar=(l,v)=>`<div class="br"><small>${l}</small>${pbar(v)}<b>${v}</b></div>`;
+const ring=(v,z=64)=>`<div class="rg" style="--p:${v};--z:${z}px"><b>${v}</b></div>`;
+const empty=(i,t,s,x="")=>`<div class="em c">${ic(i,34)}<b>${t}</b><p>${s}</p>${x}</div>`;
+const btn=(t,m,k="")=>`<button class="btn sm ${k}" data-a="toast" data-m="${m}">${t}</button>`;
+const chips=a=>`<div class="chs">${a.map((g,i)=>`<button class="ch${i?"":" on"}" data-a="sel">${g}</button>`).join("")}</div>`;
+const pc=p=>`<article class="c hv pc">${av(p,52)}<div class="fx"><b>${p.n}</b><small>${p.g}</small><div class="row" style="gap:6px;margin-top:6px"><span class="ch">${p.m}</span><span class="ch">FairPlay ${p.f}</span></div></div>${btn("Inviter","Invitation simulée pour "+p.n+" (démo)")}</article>`;
+const sc=(s,i,k)=>`<article class="${k} sr"><span class="ib2">${ic("pad",22)}</span><div class="fx"><b>${s.t}</b><small>${s.g}, ${s.h}</small><div class="dots">${[...Array(s.s[1])].map((_,j)=>`<i class="${j<s.s[0]?"f":""}"></i>`).join("")}<small>${s.s[0]}/${s.s[1]}</small></div></div><button class="btn sm" data-a="join" data-v="${i}">Rejoindre</button></article>`;
+const ev=(e,b)=>`<div class="rw"><div class="dt"><b>${e.d}</b><small>${e.mo}</small></div><div class="fx"><b>${e.t}</b><small>${e.k}</small></div>${b?btn("S’inscrire","Inscription simulée (démo)"):""}</div>`;
+const ch=c=>`<div style="margin:8px 0 14px"><div class="row" style="justify-content:space-between"><b>${c.t}</b><b>${c.p}&nbsp;%</b></div>${pbar(c.p)}<small style="margin-top:4px">Récompense : ${c.r}</small></div>`;
+
+/* ===== CREWUP+ (offre payante simulée : aucun paiement réel) ===== */
+const AF=3;
+const pls=`<span class="pls">${ic("star",11)} Plus</span>`;
+const lk=(t,s)=>`<section class="c upg">${ic("lock",26)}<b>${t}</b><p class="mu">${s}</p><a class="btn sm" href="#plus">${ic("star",16)} Découvrir CREWUP+</a></section>`;
+const up=t=>openM(`<h3>${ic("lock",20)} ${t}</h3><p class="mu" style="margin:8px 0 16px">Fonction réservée à CREWUP+.</p><div class="row"><a class="btn" href="#plus">${ic("star",18)} Découvrir CREWUP+</a><button class="btn gh" data-a="x">Plus tard</button></div>`);
+const PL=[["zap","Auto Fill",AF+" par semaine","illimité"],["heart","Match Perfect","1 match détaillé","tous les matchs"],["search","Filtres avancés","humeur seulement","FairPlay 90+"],["life","SOS","standard","prioritaire"],["award","Statistiques","de base","avancées"],["star","Badge","aucun","badge Plus"]];
+
+/* ===== VUES : une fonction par page ===== */
+const V={
+plus:()=>ph("CREWUP+","Plus de matchs, plus de places, plus de visibilité.")+(S.plus?`<section class="c upg on">${ic("star",30)}<h2>Tu es CREWUP+ ${pls}</h2><p class="mu">Abonnement simulé : aucun paiement réel.</p><button class="btn gh sm" data-a="unsub">Revenir au plan Gratuit</button></section>`:`<div class="chs"><button class="ch${S.yr?"":" on"}" data-a="bill" data-v="0">Mensuel</button><button class="ch${S.yr?" on":""}" data-a="bill" data-v="1">Annuel, 2 mois offerts</button></div><section class="c upg"><h2>CREWUP+ <span class="prc">${S.yr?"39,90 € / an":"3,99 € / mois"}</span></h2><small>Prix d’exemple, à définir avant le lancement.</small><button class="btn" data-a="buy">${ic("star",18)} Passer à CREWUP+</button></section>`)+`<section class="c" style="margin-top:16px"><h3>Gratuit ou CREWUP+ ${dm}</h3>${PL.map(f=>`<div class="rw">${ic(f[0],18)}<div class="fx"><b>${f[1]}</b><small>Gratuit : ${f[2]}</small></div><span class="ch${S.plus?" on":""}">${f[3]}</span></div>`).join("")}</section>`,
+accueil:()=>`<div class="hero c"><div><h1>Bon retour !</h1><p class="mu" style="margin-top:8px">Des places se libèrent ce soir : ton crew t’attend.</p><div class="row" style="margin-top:18px"><a class="btn" href="#sos">${ic("life",18)} Lancer un SOS</a><a class="btn gh" href="#creer">${ic("plus",18)} Créer une session</a></div></div><div><div class="row" style="flex-wrap:nowrap"><span class="lv">${av({n:"T",c:"#8a6bff",o:1},56)}<em>12</em></span><div><b>Toi (profil démo)</b><small>Niveau 12, Valorant et GTA Online</small></div></div>${bar("XP",68)}${bar("FairPlay",87)}</div></div>
+<div class="g dash">
+${card("Joueurs disponibles",`<div class="hs">${D.players.filter(p=>p.o).map(p=>`<a class="pp" href="#joueurs">${av(p,52)}<b>${p.n}</b><small>${p.g}</small></a>`).join("")}</div>`,"joueurs","sp3")}
+${card("Sessions à rejoindre",D.sessions.slice(0,3).map((s,i)=>sc(s,i,"rw")).join(""),"sessions","sp2")}
+<section class="c sosq"><h3>SOS Joueur</h3><p>Il te manque un coéquipier ? Lance un appel express.</p><a class="btn" href="#sos">${ic("life",18)} Ouvrir le SOS</a></section>
+${S.plus?"":lk("Passe à CREWUP+","Auto Fill illimité, matchs complets et filtres avancés.")}
+${card("Événements à venir",D.events.map(e=>ev(e)).join(""),"evenements")}
+${card("Recommandés pour toi",D.players.slice(0,3).map(p=>`<div class="rw">${av(p,40)}<div class="fx"><b>${p.n}</b><small>${p.g}, compatibilité</small></div>${ring(p.k,46)}</div>`).join(""),"match")}
+${card("Défi communautaire",ch(D.chal[0]),"evenements")}
+${card("Activités récentes",D.act.map(a=>`<div class="rw"><span class="dtd"></span><span>${a}</span></div>`).join(""))}
+${card("Communautés populaires",D.crews.slice(0,3).map(c=>`<div class="rw">${av({n:c.n,c:c.c},40)}<div class="fx"><b>${c.n}</b><small>${c.g}</small></div></div>`).join(""),"crews")}
+${card("Notifications",D.notifs.map(n=>`<div class="rw">${ic("bell",16)}<span class="fx">${n[0]}</span></div>`).join(""),"notifications")}
+</div>`,
+
+joueurs:()=>{const L=D.players.filter(p=>(!S.mood||p.m==S.mood)&&(!S.fp||p.f>=90));return ph("Découvrir des joueurs","Mood Matching : choisis l’ambiance que tu cherches.")+`<div class="chs">${D.moods.map(m=>`<button class="ch${S.mood==m?" on":""}" data-a="mood" data-v="${m}">${m}</button>`).join("")}<button class="ch${S.fp?" on":""}" data-a="adv">FairPlay 90+ ${pls}</button></div>`+(L.length?`<div class="g g3">${L.map(pc).join("")}</div>`:empty("search","Aucun joueur démo pour cette ambiance","Choisis une autre humeur ou retire le filtre."))},
+
+sos:()=>{const s=S.sos;return ph("SOS Joueur","Il te manque un coéquipier ? Lance un appel express.")+`<div class="g g2"><section class="c" style="text-align:center"><button class="rad${s==1?" go":""}" data-a="sos" aria-label="Lancer le SOS">${ic("life",44)}</button><h2 style="margin:18px 0 6px">${["Appuie pour lancer ton SOS","Recherche de coéquipiers…","3 joueurs démo répondent"][s]}</h2><small>Simulation locale : personne n’est réellement contacté.</small></section><section class="c"><h3>Ta demande</h3><small>Jeu</small>${chips(["Valorant","GTA Online","Rocket League","Apex"])}<small>Il manque</small>${chips(["1 joueur","2 joueurs","3 joueurs"])}<small>Ambiance</small>${chips(D.moods.slice(0,4))}<div class="rw">${ic("zap",16)}<span class="fx">SOS prioritaire</span>${S.plus?'<span class="ch on">Actif</span>':pls}</div></section></div>`+(s==2?`<section class="c" style="margin-top:16px"><h3>Réponses ${dm}</h3>${D.players.slice(0,3).map(p=>`<div class="rw">${av(p,40)}<div class="fx"><b>${p.n}</b><small>${p.g}, FairPlay ${p.f}</small></div>${btn("Rejoindre","Équipe formée… en démo !")}</div>`).join("")}</section>`:"")},
+
+match:()=>{const p=D.players[0];return ph("Match Perfect","Ta compatibilité de jeu avec les autres joueurs.")+`<div class="g g2"><section class="c" style="text-align:center">${ring(p.k,120)}<h2 style="margin:12px 0 2px">${p.n}</h2><small>${p.g}, ${p.m}</small><div style="text-align:left;margin:14px 0">${bar("Style de jeu",96)}${bar("Horaires",90)}${bar("Ambiance",92)}${bar("Objectifs",98)}</div>${btn("Proposer une session","Proposition simulée (démo)")}</section><section class="c"><h3>Autres affinités</h3>${(S.plus?D.players.slice(1):D.players.slice(1,2)).map(q=>`<div class="rw">${av(q,40)}<div class="fx"><b>${q.n}</b><small>${q.g}, ${q.m}</small></div>${ring(q.k,48)}</div>`).join("")}${S.plus?"":lk("Voir toutes tes affinités","Gratuit : 1 match détaillé. Avec CREWUP+ : tous les joueurs compatibles.")}</section></div>`},
+
+sessions:()=>ph("Sessions de jeu","Rejoins une partie ou crée la tienne.")+`<div class="row" style="margin-bottom:16px"><a class="btn" href="#creer">${ic("plus",18)} Créer une session</a></div><div class="g g2">${D.sessions.map((s,i)=>sc(s,i,"c hv")).join("")}</div>`,
+
+creer:()=>ph("Créer une session","Prépare ta partie : le formulaire est une démonstration.")+`<div class="g g2"><section class="c"><h3>Détails</h3><small>Titre</small><input placeholder="Ex. : Ranked du jeudi"><small>Jeu</small>${chips(["Valorant","GTA Online","Rocket League","Minecraft"])}<small>Ambiance</small>${chips(D.moods.slice(0,4))}<small>Date et heure</small><input type="datetime-local"></section><section class="c"><h3>Places et Auto Fill</h3><div class="row" style="margin:6px 0 14px">${S.slots.map((s,i)=>`<button class="sl${s==1?" f":s==2?" w":""}" data-a="slot" data-v="${i}" aria-label="Place ${i+1}">${s==1?ic("check",20):s==2?"…":ic("plus",18)}</button>`).join("")}</div><p class="mu">Touche une place pour la remplir ou la libérer. Auto Fill propose des joueurs compatibles pour les places libres.</p><small style="margin-top:8px">${S.plus?"Auto Fill illimité avec CREWUP+":`Auto Fill : ${Math.max(0,AF-S.af)}/${AF} restants cette semaine (démo)`}</small><div class="row" style="margin-top:14px"><button class="btn gh" data-a="auto">${ic("zap",18)} Simuler Auto Fill</button><button class="btn" data-a="create">Créer la session</button></div></section></div>`,
+
+crews:()=>ph("Communautés","Rejoins des crews autour de tes jeux.")+`<div class="g g3">${D.crews.map(c=>`<article class="c hv"><div class="cbn" style="--c:${c.c}"></div><h3 style="margin-top:12px">${c.n}</h3><small style="margin-bottom:12px">${c.g}, ${c.u} membres (démo)</small>${btn("Rejoindre","Crew rejoint… en démo !")}</article>`).join("")}</div><section class="c" style="margin-top:16px"><h3>CREWUP CITY <span class="dm">Concept</span></h3><svg class="city" viewBox="0 0 300 90" preserveAspectRatio="none"><defs><linearGradient id="gg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a6bff"/><stop offset="1" stop-color="#ff5c8a" stop-opacity=".15"/></linearGradient></defs>${[30,52,38,70,46,62,34,56,26].map((h,i)=>`<rect x="${6+i*32}" y="${90-h}" width="24" height="${h}" rx="3"/>`).join("")}</svg><p class="mu">Un univers visuel où chaque crew construit son quartier. Concept à développer dans une phase ultérieure.</p></section>`,
+
+evenements:()=>ph("Événements","Tournois, soirées et défis collectifs.")+`<div class="g g2"><section class="c"><h3>À venir</h3>${D.events.map(e=>ev(e,1)).join("")}</section><section class="c"><h3>Global Community Challenges</h3>${D.chal.map(ch).join("")}</section></div>`,
+
+messages:()=>{const C=D.convos,o=S.convo,cv=o!=null&&C[o];return ph("Messagerie","Conversations de démonstration : rien n’est envoyé.")+`<div class="msg c${cv?" open":""}"><div class="ls">${C.map((c,i)=>`<button class="cr${o==i?" on":""}" data-a="convo" data-v="${i}">${av({n:c.n,c:c.c},42)}<span class="fx"><b>${c.n}</b><small>${c.l}</small></span></button>`).join("")}</div><div class="ct">${cv?`<div class="cth"><button class="ib mb" data-a="convo" data-v="" aria-label="Retour">${ic("x",18)}</button><b>${cv.n}</b></div><div class="ms">${[...cv.m,...(S.chat[o]||[])].map(m=>`<div class="mg${m[0]=="Toi"?" me":""}"><small>${m[0]}</small>${m[1]}</div>`).join("")}</div><div class="cin"><input id="ci" placeholder="Écrire un message (démo locale)"><button class="btn sm" data-a="send">Envoyer</button></div>`:`<div class="em">${ic("msg",34)}<b>Aucune conversation ouverte</b><p>Choisis une conversation dans la liste.</p></div>`}</div></div>`},
+
+notifications:()=>ph("Notifications","Tes alertes de sessions, de crews et d’événements.")+(S.notif?`<section class="c">${D.notifs.map(n=>`<div class="rw">${ic("bell",18)}<div class="fx"><b>${n[0]}</b><small>${n[1]}</small></div></div>`).join("")}<div style="margin-top:12px"><button class="btn gh sm" data-a="clear">Tout marquer comme lu</button></div></section>`:empty("bell","Tout est à jour","Aucune nouvelle notification pour le moment.",'<button class="btn gh sm" data-a="reset" style="margin-top:8px">Recharger les exemples</button>')),
+
+actus:()=>ph("Actualités gaming","Contenus d’exemple : le vrai flux sera branché plus tard.")+`<div class="g g3">${D.news.map(n=>`<article class="c hv"><div class="cbn" style="--c:${n.c};height:90px"></div><div class="row" style="margin:12px 0 6px"><span class="ch">${n.k}</span><span class="dm">Exemple</span></div><b>${n.t}</b></article>`).join("")}</div>`,
+
+profil:()=>ph("Profil joueur","Ta carte de joueur, ton FairPlay Score et tes badges.")+`<section class="c pf"><div class="bn"></div><div class="bd"><div class="row" style="align-items:flex-end;flex-wrap:nowrap">${av({n:"T",c:"#8a6bff",o:1},84)}<div class="fx"><h2>Toi (profil démo) ${S.plus?pls:""}</h2><small>Niveau 12, Valorant et GTA Online</small></div>${btn("Modifier","Édition simulée (démo)","gh")}</div></div></section><div class="g g2" style="margin-top:16px"><section class="c"><h3>FairPlay Score ${dm}</h3><div class="row" style="flex-wrap:nowrap">${ring(87,84)}<p class="mu fx">Une réputation positive, construite par la communauté.</p></div>${bar("Ponctualité",90)}${bar("Esprit d’équipe",92)}${bar("Respect",95)}${bar("Communication",81)}</section><section class="c"><h3>Badges ${dm}</h3><div class="chs">${["Premier crew","Coéquipier fiable","Noctambule","Mentor"].map(b=>`<span class="ch on">${b}</span>`).join("")}</div></section></div>${S.plus?`<section class="c" style="margin-top:16px"><h3>Statistiques avancées ${dm}</h3>${bar("Sessions terminées",74)}${bar("Taux de présence",93)}${bar("Compatibilité moyenne",86)}</section>`:`<div style="margin-top:16px">${lk("Statistiques avancées","Suis ta présence, ta compatibilité moyenne et ta progression avec CREWUP+.")}</div>`}`,
+
+journey:()=>ph("Player Journey","Tes expériences et tes souvenirs gaming, dans l’ordre.")+`<div class="row" style="margin-bottom:16px">${btn("Ajouter un souvenir","Ajout simulé (démo)")}</div><div class="tl">${D.jr.map(j=>`<article class="c hv it"><small>${j.d}, ${j.g}</small><b>${j.t}</b></article>`).join("")}</div>`,
+
+classements:()=>ph("Classements","Classement FairPlay : la fiabilité avant tout.")+`<section class="c">${[...D.players].sort((a,b)=>b.f-a.f).map((p,i)=>`<div class="rw r${i+1}"><span class="rk">${i+1}</span>${av(p,40)}<div class="fx"><b>${p.n}</b><small>${p.g}</small></div><b>${p.f}</b></div>`).join("")}</section>`,
+
+parametres:()=>ph("Paramètres","Réglages de démonstration : rien n’est enregistré.")+`<section class="c">${[["Notifications","Alertes de sessions et d’événements",1],["Profil visible","Apparaître dans Découvrir",1],["Mode discret","Masquer ton statut en ligne",0],["Animations","Transitions et effets",1]].map(r=>`<label class="rw"><div class="fx"><b>${r[0]}</b><small>${r[1]}</small></div><span class="sw"><input type="checkbox" data-a="demo"${r[2]?" checked":""}><i></i></span></label>`).join("")}</section><section class="c" style="margin-top:16px"><h3>Compte</h3><p class="mu">Connexion et authentification : non disponibles en phase 1.</p></section>`,
+
+admin:()=>ph("Administration","Espace de modération : structure uniquement.")+`<div class="rib">Aucune authentification en phase 1 : cet espace devra être protégé avant toute mise en ligne.</div><div class="g g3">${["Utilisateurs","Sessions","Signalements","Crews"].map(k=>`<section class="c"><small>${k}</small><h2>—</h2><small>À connecter en phase 2</small></section>`).join("")}</div>`+empty("shield","Aucun signalement","La file de modération apparaîtra ici.")
+};
+
+/* ===== NAVIGATION (route = #cle) ===== */
+const nav=()=>{
+$("#side").innerHTML=`<a class="lg" href="#accueil"><span class="lm">${ic("zap")}</span><b>CREW<span style="color:var(--r)">UP</span></b></a>`+Object.entries(P).map(([k,[l,i]])=>`<a class="ni${k==S.k?" on":""}" href="#${k}">${ic(i,18)}<span>${l}</span></a>`).join("");
+$("#top").innerHTML=`<span class="lm mo">${ic("zap",18)}</span><h2>${P[S.k][0]}</h2><span class="dm">Démo<span class="dsk">, phase 1</span></span><a class="ib" href="#notifications" aria-label="Notifications">${ic("bell",18)}${S.notif?'<i class="dot"></i>':""}</a><span class="dsk">${av({n:"T",c:"#8a6bff"},40)}</span>`;
+$("#bar").innerHTML=[["accueil","home","Accueil"],["joueurs","search","Joueurs"],["sos","life","SOS"],["sessions","pad","Sessions"]].map(([k,i,l])=>`<a class="bi${k=="sos"?" sos":""}${k==S.k?" on":""}" href="#${k}"><span>${ic(i,k=="sos"?26:22)}</span>${l}</a>`).join("")+`<button class="bi${["accueil","joueurs","sos","sessions"].includes(S.k)?"":" on"}" data-a="menu" aria-label="Menu"><span>${ic("grid",22)}</span>Menu</button>`};
+const render=a=>{$("#view").innerHTML=`<div class="${a?"ani":""}"><div class="rib">Maquette de la phase 1 : joueurs, scores et statistiques sont fictifs, aucune connexion réelle.</div>${V[S.k]()}</div>`;if(a)document.querySelectorAll("#view .c").forEach((e,i)=>e.style.setProperty("--i",Math.min(i,9)))};
+const route=()=>{const k=location.hash.slice(1);S.k=P[k]?k:"accueil";closeM();nav();render(1);scrollTo(0,0)};
+
+/* ===== INTERACTIONS DE DEMO ===== */
+const openM=h=>{$("#modal").innerHTML=`<div class="sheet" role="dialog" aria-modal="true">${h}</div>`;$("#modal").classList.add("on");const f=$("#modal .btn");if(f)f.focus()};
+const closeM=()=>$("#modal").classList.remove("on");
+let tt;const toast=m=>{const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("on"),2600)};
+document.addEventListener("click",e=>{
+const t=e.target;if(t.id=="modal"||t.closest(".mi"))return closeM();
+const b=t.closest("[data-a]");if(!b)return;const a=b.dataset.a,v=b.dataset.v;
+if(a=="x")closeM();
+else if(a=="menu")openM(`<h3 style="margin-bottom:14px">Navigation</h3><div class="mg2">${Object.entries(P).map(([k,[l,i]])=>`<a class="mi" href="#${k}">${ic(i,22)}<small>${l}</small></a>`).join("")}</div>`);
+else if(a=="sel"){b.parentNode.querySelectorAll(".ch").forEach(c=>c.classList.remove("on"));b.classList.add("on")}
+else if(a=="mood"){S.mood=S.mood==v?"":v;render()}
+else if(a=="sos"){if(S.sos==1)return;S.sos=S.sos==2?0:1;render();if(S.sos==1)setTimeout(()=>{if(S.k=="sos"){S.sos=2;render()}},1800)}
+else if(a=="slot"){S.slots[v]=S.slots[v]==1?0:1;render()}
+else if(a=="auto"){if(!S.plus&&S.af>=AF)return up("Auto Fill illimité");S.af++;S.slots=S.slots.map(s=>s||2);render();setTimeout(()=>{S.slots=S.slots.map(s=>s==2?1:s);if(S.k=="creer")render()},1500)}
+else if(a=="convo"){S.convo=v===""?null:+v;render()}
+else if(a=="send"){const x=$("#ci").value.trim();if(x){(S.chat[S.convo]=S.chat[S.convo]||[]).push(["Toi",esc(x)]);render();$("#ci").focus()}}
+else if(a=="clear"){S.notif=0;nav();render()}
+else if(a=="reset"){S.notif=1;nav();render()}
+else if(a=="join"){const s=D.sessions[v];openM(`<h3>Rejoindre «&nbsp;${s.t}&nbsp;» ?</h3><p class="mu" style="margin:6px 0 12px">${s.g}, ${s.h}</p><p>${dm} Aucune inscription réelle : cette action est simulée.</p><div class="row" style="margin-top:16px"><button class="btn" data-a="toast" data-m="Place réservée… pour de faux (démo)">Confirmer</button><button class="btn gh" data-a="x">Annuler</button></div>`)}
+else if(a=="create")openM(`<h3>Session simulée</h3><p class="mu" style="margin:8px 0 16px">Rien n’est enregistré : la création réelle arrivera avec le backend.</p><div class="row"><a class="btn" href="#sessions">Voir les sessions</a><button class="btn gh" data-a="x">Fermer</button></div>`);
+else if(a=="bill"){S.yr=+v;render()}
+else if(a=="buy")openM(`<h3>Passer à CREWUP+ ?</h3><p class="mu" style="margin:6px 0 12px">${S.yr?"39,90 € par an":"3,99 € par mois"} (prix d’exemple)</p><p>${dm} Aucun paiement réel : l’abonnement est simulé.</p><div class="row" style="margin-top:16px"><button class="btn" data-a="sub">Activer en démo</button><button class="btn gh" data-a="x">Annuler</button></div>`);
+else if(a=="sub"){S.plus=1;closeM();nav();render();toast("CREWUP+ activé… en démo, sans paiement")}
+else if(a=="unsub"){S.plus=0;S.fp=0;render()}
+else if(a=="adv"){if(!S.plus)return up("Filtres avancés");S.fp=!S.fp;render()}
+else if(a=="toast"){closeM();toast(b.dataset.m||"Action de démonstration : rien n’est enregistré.")}
+});
+document.addEventListener("keydown",e=>{if(e.key=="Escape")closeM();if(e.key=="Enter"&&e.target.id=="ci")$("[data-a=send]").click()});
+document.addEventListener("change",e=>{if(e.target.dataset.a=="demo")toast("Réglage de démonstration : non enregistré")});
+addEventListener("hashchange",route);route();
+
+</script>
+</body>
+</html>
 
